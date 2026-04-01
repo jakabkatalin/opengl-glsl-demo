@@ -3,10 +3,6 @@
 #include <iostream>
 #include <cmath>
 
-// ============================================================
-// SHADERE
-// ============================================================
-
 const char* vertexShaderSrc = R"(
     #version 330 core
     layout(location = 0) in vec3 pos;
@@ -19,7 +15,6 @@ const char* vertexShaderSrc = R"(
         vertColor = col;
     }
 )";
-
 const char* fragmentShaderSrc = R"(
     #version 330 core
     in vec3 vertColor;
@@ -33,11 +28,6 @@ const char* fragmentShaderSrc = R"(
         fragColor = vec4(vertColor * pulse, 1.0);
     }
 )";
-
-// ============================================================
-// HELPERS
-// ============================================================
-
 unsigned int compileShader(unsigned int type, const char* src) {
     unsigned int id = glCreateShader(type);
     glShaderSource(id, 1, &src, nullptr);
@@ -52,7 +42,6 @@ unsigned int compileShader(unsigned int type, const char* src) {
     }
     return id;
 }
-
 unsigned int createProgram(const char* vs, const char* fs) {
     unsigned int v = compileShader(GL_VERTEX_SHADER, vs);
     unsigned int f = compileShader(GL_FRAGMENT_SHADER, fs);
@@ -76,11 +65,6 @@ unsigned int createProgram(const char* vs, const char* fs) {
 
     return prog;
 }
-
-// ============================================================
-// CALLBACKS
-// ============================================================
-
 void framebufferSizeCallback(GLFWwindow* w, int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -89,11 +73,6 @@ void processInput(GLFWwindow* w) {
     if (glfwGetKey(w, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(w, true);
 }
-
-// ============================================================
-// MAIN
-// ============================================================
-
 int main() {
     // --- init GLFW ---
     if (!glfwInit()) {
@@ -114,23 +93,16 @@ int main() {
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-
-    // --- init GLAD ---
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "GLAD init failed\n";
         return -1;
     }
-
-    // --- date vertex ---
-    // fiecare vertex: x, y, z,   r, g, b
     float vertices[] = {
         // pozitie          // culoare
-        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // stanga jos  — rosu
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // dreapta jos — verde
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  // sus         — albastru
+        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // stanga jos  â€” rosu
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // dreapta jos â€” verde
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  // sus         â€” albastru
     };
-
-    // --- VAO si VBO ---
     unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -150,31 +122,20 @@ int main() {
 
     glBindVertexArray(0); // unbind
 
-    // --- shader program ---
     unsigned int shader = createProgram(vertexShaderSrc, fragmentShaderSrc);
 
-    // --- render loop ---
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
-
-        // clear
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        // trimite timpul ca uniform
         float t = (float)glfwGetTime();
         glUseProgram(shader);
         glUniform1f(glGetUniformLocation(shader, "uTime"), t);
-
-        // draw
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-    // --- cleanup ---
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shader);
