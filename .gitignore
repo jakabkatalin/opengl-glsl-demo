@@ -5,10 +5,11 @@ Debug/
 Release/
 *.user
 *.suo
-ipch/
-lib/
 *.sln
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
 *.glad.c
+ipch/
+lib/
+include/
