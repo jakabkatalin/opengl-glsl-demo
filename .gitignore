@@ -9,7 +9,7 @@ Release/
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
-*.glad.c
+glad.c
 ipch/
 lib/
 include/
