@@ -7,3 +7,8 @@ Release/
 *.suo
 ipch/
 lib/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.glad.c
